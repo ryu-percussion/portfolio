@@ -11,9 +11,14 @@ function hostWidth() {
   return e8Host === document.body ? windowWidth : Math.max(300, e8Host.clientWidth);
 }
 
+function canvasH() {
+  const w = hostWidth();
+  return w < 640 ? Math.round(w * 0.95) : 500;
+}
+
 function setup() {
   e8Host = document.getElementById('e8-sketch') || document.body;
-  let canvas = createCanvas(hostWidth(), 500);
+  let canvas = createCanvas(hostWidth(), canvasH());
   canvas.parent(e8Host);
   generateE8System();
   for (let i = 0; i < 8; i++) {
@@ -41,6 +46,7 @@ function draw() {
   }
 
   translate(width / 2, height / 2);
+  scale(min(1, width / 640));
 
   let radarDelta = 0;
   if (audioCtx && audioCtx.state === 'running') {
@@ -267,7 +273,7 @@ function setupUI() {
   sliderGrid.style('display', 'grid');
   sliderGrid.style('grid-template-columns', 'repeat(auto-fill, minmax(130px, 1fr))');
   sliderGrid.style('gap', '10px');
-  sliderGrid.style('max-height', '260px');
+  sliderGrid.style('max-height', hostWidth() < 640 ? '180px' : '260px');
   sliderGrid.style('overflow-y', 'auto');
   sliderGrid.parent(masterContainer);
 
@@ -293,4 +299,4 @@ function setupUI() {
   }
 }
 
-function windowResized() { resizeCanvas(hostWidth(), 500); }
+function windowResized() { resizeCanvas(hostWidth(), canvasH()); }
